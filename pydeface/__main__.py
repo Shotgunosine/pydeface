@@ -57,6 +57,14 @@ def main():
         help="FSL-FLIRT cost function. Default is 'mutualinfo'.")
 
     parser.add_argument(
+        "--bigmove", action='store_true',
+        help="expand search space to -180 to 180")
+
+    parser.add_argument(
+        "--usesqform", action='store_true',
+        help="use qform for initialization")
+
+    parser.add_argument(
         "--template", metavar='path', required=False,
         help=("Optional template image that will be used as the registration "
               "target instead of the default."))
@@ -102,6 +110,11 @@ def main():
     flirt.inputs.out_matrix_file = tmpmat
     flirt.inputs.out_file = tmpfile2
     flirt.inputs.reference = infile
+    flirt.inputs.uses_qform = args.usesqform
+    if args.bigmove:
+        flirt.inputs.searchr_x = [-180,180]
+        flirt.inputs.searchr_y = [-180,180]
+        flirt.inputs.searchr_z = [-180,180]
     flirt.run()
 
     # warp facemask to infile
